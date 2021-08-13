@@ -3,4 +3,4 @@ dagfileName=dags/SimpleDagTemplate.py
 #requirements_file=[NA/requirements/project1_requirements.txt] # Pass NA if not applicable
 requirements_file=requirements/project1_requirements.txt
 #dependencies=Dag File Dependencies relative path for the dags
-dependencies=[conf/Dependency.conf,conf/Dependency.properties]
+dependencies=conf/Dependency.conf,conf/Dependency.properties

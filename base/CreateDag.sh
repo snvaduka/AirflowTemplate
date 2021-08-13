@@ -19,30 +19,52 @@ function parseDagDefToDic()
 	completeFileNameWithDir="$gitClonedDir/$inputDefinitionFile"
     printMessage "Complete Path for dag definition file $completeFileNameWithDir"
 	
-	while read line; do
-    if [[ "$LINE" != \#* ]]; 
-    then
-        printMessage $line
-        key=$(echo $line | cut -d "=" -f1)
-        data=$(echo $line | cut -d "=" -f2)
-        dictionary[$key]="$data"
-    fi
-done <"$completeFileNameWithDir"	
+	while IFS="" read -r line || [ -n "$line" ]
+    do
+        if [[ $line != "#"* ]]; 
+        then
+            printMessage $line
+            key=$(echo $line | cut -d "=" -f1)
+            data=$(echo $line | cut -d "=" -f2)
+            dictionary[$key]="$data"
+        fi
+    done <"$completeFileNameWithDir"	
 }
 
-function getDagDefinitionFile()
+function getValueFromDic() 
 {
-    echo "${dictionary[dagfileName]}"
+    echo "${dictionary[$1]}"
 }
 
-function getDagDependencies()
+function copyConfigs() 
 {
-    echo "${dictionary[dependencies]}"
+    airflow_home=$1
+    clonedRepoDir=$2
+    configsList=$3
+    cd $clonedRepoDir
+
+    tempIFS=$IFS
+    export IFS=","
+    for confFile in $configsList; 
+    do
+        mkdir -p $airflow_home/conf
+        printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/conf"
+        cp --parents confFile $airflow_home
+    done
+
+    export IFS=$tempIFS
 }
 
-function getRequirementsFile()
+function copyDagDefinition()
 {
-    echo "${dictionary[requirements_file]}"
+    airflow_home=$1
+    clonedRepoDir=$2
+    dagFileLoc=$3
+
+    cd $clonedRepoDir
+    
+    printMessage "Copy Dag Definitions from $clonedRepoDir/$dagFileLoc to Airflow home $airflow_home/dags"
+    cp --parents dagFileLoc $airflow_home
 }
 
 
@@ -57,7 +79,7 @@ printMessage "Input dag definition file $inputTemplate"
 #Setting Airflow Home
 
 if [ -z "${AIRFLOW_HOME}" ]; then 
-    airflow_home='/root/airflow'
+    airflow_home='/tmp/root/airflow'
 else 
     airflow_home=${AIRFLOW_HOME}
 fi
@@ -88,11 +110,14 @@ parseDagDefToDic $PWD $inputTemplate
 
 echo "${dictionary[@]}"
 
-dagDefinitionFile=$(getDagDefinitionFile)
+dagDefinitionFile=$(getValueFromDic "dagfileName")
 printMessage "Dag Definition file $dagDefinitionFile"
 
-dependencies=$(getDagDependencies)
+dependencies=$(getValueFromDic "dependencies")
 printMessage "Dag Dependencies file $dependencies"
 
-requirements_file=$(getRequirementsFile)
+requirements_file=$(getValueFromDic "requirements_file")
 printMessage "Requirement file $requirements_file"
+
+copyDagDefinition airflow_home $PWD dagDefinitionFile
+copyConfigs airflow_home $PWD dependencies
