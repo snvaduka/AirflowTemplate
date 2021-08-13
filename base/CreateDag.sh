@@ -16,12 +16,13 @@ function parseDagDefToDic()
 	gitClonedDir=$1
 	inputDefinitionFile=$2
 	
-	completeFileNameWithDir = "$gitClonedDir/$inputDefinitionFile"
+	completeFileNameWithDir="$gitClonedDir/$inputDefinitionFile"
     printMessage "Complete Path for dag definition file $completeFileNameWithDir"
 	
 	while read line; do
-    if [[ $line != #* ]]; 
+    if [[ "$LINE" != \#* ]]; 
     then
+        printMessage $line
         key=$(echo $line | cut -d "=" -f1)
         data=$(echo $line | cut -d "=" -f2)
         dictionary[$key]="$data"
@@ -31,17 +32,17 @@ done <"$completeFileNameWithDir"
 
 function getDagDefinitionFile()
 {
-    echo dictionary["dagfileName"]
+    echo "${dictionary[dagfileName]}"
 }
 
 function getDagDependencies()
 {
-    echo dictionary["dependencies"]
+    echo "${dictionary[dependencies]}"
 }
 
 function getRequirementsFile()
 {
-    echo dictionary["requirements_file"]
+    echo "${dictionary[requirements_file]}"
 }
 
 
@@ -64,7 +65,7 @@ fi
 printMessage "Airflow Home $airflow_home"
 
 #Preparing Environment
-currentDir=/tmp/$(date +%N)
+currentDir=/tmp/DELETEDIR4/$(date +%N)
 
 printMessage "Current cloning directory $currentDir"
 
@@ -84,6 +85,8 @@ printMessage "Repository name $repo_dir"
 cd $repo_dir
 
 parseDagDefToDic $PWD $inputTemplate
+
+echo "${dictionary[@]}"
 
 dagDefinitionFile=$(getDagDefinitionFile)
 printMessage "Dag Definition file $dagDefinitionFile"
