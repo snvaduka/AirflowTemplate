@@ -1,5 +1,8 @@
 #!/bin/bash
 
+declare -A dictionary
+
+
 #Function 
 
 function printMessage() 
@@ -7,13 +10,45 @@ function printMessage()
 	printf '%s %s\n' "$(date -u +"%Y-%m-%dT%H:%M:%S")" "$1";
 }
 
+function parseDagDefToDic()
+{
+	printMessage "Present Working Directory $1, Input dag definition file $2"
+	gitClonedDir=$1
+	inputDefinitionFile=$2
+	
+	completeFileNameWithDir = "$gitClonedDir/$inputDefinitionFile"
+    printMessage "Complete Path for dag definition file $completeFileNameWithDir"
+	
+	while read line; do
+        key=$(echo $line | cut -d "=" -f1)
+        data=$(echo $line | cut -d "=" -f2)
+        dictionary[$key]="$data"
+done <"$completeFileNameWithDir"	
+}
+
+function getDagDefinitionFile()
+{
+    echo dictionary["dagfileName"]
+}
+
+function getDagDependencies()
+{
+    echo dictionary["dependencies"]
+}
+
+function getRequirementsFile()
+{
+    echo dictionary["requirements_file"]
+}
+
+
 #Input Parameters
 github_url=$1
 
 printMessage "Cloning URL $github_url "
-github_manifest=$2
+inputTemplate=$2
 
-printMessage "Manifest file $github_manifest"
+printMessage "Input dag definition file $inputTemplate"
 
 #Setting Airflow Home
 
@@ -44,3 +79,9 @@ repo_dir=$(echo $repo_name| cut -d'.' -f 1)
 printMessage "Repository name $repo_dir"
 
 cd $repo_dir
+
+parseDagDefToDic $PWD $inputTemplate
+
+dagDefinitionFile=$(getDagDefinitionFile)
+dependencies=$(getDagDefinitionFile)
+requirements_file=$(getRequirementsFile)
