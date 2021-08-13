@@ -49,7 +49,7 @@ function copyConfigs()
     do
         mkdir -p $airflow_home/conf
         printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/conf"
-        cp --parents confFile $airflow_home
+        cp --parents $confFile $airflow_home
     done
 
     export IFS=$tempIFS
@@ -64,7 +64,7 @@ function copyDagDefinition()
     cd $clonedRepoDir
     
     printMessage "Copy Dag Definitions from $clonedRepoDir/$dagFileLoc to Airflow home $airflow_home/dags"
-    cp --parents dagFileLoc $airflow_home
+    cp --parents $dagFileLoc $airflow_home
 }
 
 
@@ -119,5 +119,5 @@ printMessage "Dag Dependencies file $dependencies"
 requirements_file=$(getValueFromDic "requirements_file")
 printMessage "Requirement file $requirements_file"
 
-copyDagDefinition airflow_home $PWD dagDefinitionFile
-copyConfigs airflow_home $PWD dependencies
+copyDagDefinition $airflow_home $PWD $dagDefinitionFile
+copyConfigs $airflow_home $PWD $dependencies
