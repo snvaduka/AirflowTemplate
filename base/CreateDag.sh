@@ -49,7 +49,13 @@ function copyConfigs()
     do
         mkdir -p $airflow_home/conf
         printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/conf"
-        cp --parents $confFile $airflow_home
+        if [ -z "$airflow_home/$confFile" ]; 
+        then
+            cp --parents $confFile $airflow_home
+        else
+            printMessage "Already the file $confFile exists in $airflow_home/conf skipping copying "
+        fi
+        
     done
 
     export IFS=$tempIFS
@@ -64,7 +70,13 @@ function copyDagDefinition()
     cd $clonedRepoDir
     
     printMessage "Copy Dag Definitions from $clonedRepoDir/$dagFileLoc to Airflow home $airflow_home/dags"
-    cp --parents $dagFileLoc $airflow_home
+
+    if [ -z "$airflow_home/$dagFileLoc" ]; 
+    then
+        cp --parents $dagFileLoc $airflow_home
+    else
+        printMessage "Already the file $dagFileLoc exists in $airflow_home/dags skipping copying "
+    fi
 }
 
 
