@@ -1,0 +1,3 @@
+dagfileName=dags/SimpleDagTemplate.py
+requirements_file=requirements/project1_requirements.txt
+dependencies=[conf/Dependency.conf,conf/Dependency.properties]
