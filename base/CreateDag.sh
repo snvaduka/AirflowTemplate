@@ -83,5 +83,10 @@ cd $repo_dir
 parseDagDefToDic $PWD $inputTemplate
 
 dagDefinitionFile=$(getDagDefinitionFile)
-dependencies=$(getDagDefinitionFile)
+printMessage "Dag Definition file $dagDefinitionFile"
+
+dependencies=$(getDagDependencies)
+printMessage "Dag Dependencies file $dependencies"
+
 requirements_file=$(getRequirementsFile)
+printMessage "Requirement file $requirements_file"
