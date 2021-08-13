@@ -20,9 +20,12 @@ function parseDagDefToDic()
     printMessage "Complete Path for dag definition file $completeFileNameWithDir"
 	
 	while read line; do
+    if [[ $line != #* ]]; 
+    then
         key=$(echo $line | cut -d "=" -f1)
         data=$(echo $line | cut -d "=" -f2)
         dictionary[$key]="$data"
+    fi
 done <"$completeFileNameWithDir"	
 }
 
