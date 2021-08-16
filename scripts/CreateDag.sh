@@ -49,6 +49,7 @@ function copyConfigs()
     for confFile in $configsList; 
     do
         mkdir -p $airflow_home/conf
+        mkdir -p $airflow_home/scripts
         printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/[conf/scripts]"
         if [ ! -f "$airflow_home/$confFile" ]; 
         then
