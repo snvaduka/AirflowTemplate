@@ -49,12 +49,14 @@ function copyConfigs()
     for confFile in $configsList; 
     do
         mkdir -p $airflow_home/conf
-        printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/[conf/scripts]"
+        printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/conf"
         if [ ! -f "$airflow_home/$confFile" ]; 
         then
+            printMessage "Copying new file $confFile to $airflow_home/[conf/scripts] "
             cp --parents $confFile $airflow_home
         else
-            printMessage "Already the file $confFile exists in $airflow_home/[conf/scripts] skipping copying "
+            printMessage "Already the file $confFile exists in $airflow_home/[conf/scripts] updating the definition "
+            cp --parents -R $confFile $airflow_home
         fi
         
     done
@@ -72,11 +74,12 @@ function copyDagDefinition()
     
     printMessage "Copy Dag Definitions from $clonedRepoDir/$dagFileLoc to Airflow home $airflow_home/dags"
 
-    if [ ! -f "$airflow_home/$dagFileLoc" ]; 
+    if [ -f "$airflow_home/$dagFileLoc" ]; 
     then
+        printMessage "Already the file $dagFileLoc exists in $airflow_home/dags updating the existing DAG "
         cp --parents $dagFileLoc $airflow_home
     else
-        printMessage "Already the file $dagFileLoc exists in $airflow_home/dags skipping copying "
+        printMessage "No DAG file def exist for $dagFileLoc in $airflow_home/dags. Please create DAG first, skipping copying "
     fi
 }
 
