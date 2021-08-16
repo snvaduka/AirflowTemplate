@@ -49,6 +49,8 @@ function copyConfigs()
     for confFile in $configsList; 
     do
         mkdir -p $airflow_home/conf
+        mkdir -p $airflow_home/scripts
+        mkdir -p $airflow_home/requirements
         printMessage "Copy Dag configurations from $clonedRepoDir/$confFile to Airflow home $airflow_home/conf"
         if [ ! -f "$airflow_home/$confFile" ]; 
         then
@@ -137,6 +139,13 @@ printMessage "Requirement file $requirements_file"
 
 copyDagDefinition $airflow_home $PWD $dagDefinitionFile
 copyConfigs $airflow_home $PWD $dependencies
+copyConfigs $airflow_home $PWD $requirements_file
+
+if [ -f "$airflow_home/$requirements_file" ]; 
+    then
+    printMessage "Installing necessary modules from requirements file $requirements_file at $airflow_home"
+    /bin/python3 -m pip install -r $airflow_home/$requirements_file
+fi
 
 printMessage "Cleaning Up directory $currentDir"
 

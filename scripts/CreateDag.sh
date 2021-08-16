@@ -141,7 +141,7 @@ copyConfigs $airflow_home $PWD $requirements_file
 if [ -f "$airflow_home/$requirements_file" ]; 
     then
     printMessage "Installing necessary modules from requirements file $requirements_file at $airflow_home"
-    /bin/python3 -m pip install $airflow_home/$requirements_file
+    /bin/python3 -m pip install -r $airflow_home/$requirements_file
 fi
 
 printMessage "Cleaning Up directory $currentDir"
