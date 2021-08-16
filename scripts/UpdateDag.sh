@@ -95,7 +95,7 @@ printMessage "Input dag definition file $inputTemplate"
 #Setting Airflow Home
 
 if [ -z "${AIRFLOW_HOME}" ]; then 
-    airflow_home='/tmp/root/airflow'
+    airflow_home='/root/airflow'
 else 
     airflow_home=${AIRFLOW_HOME}
 fi
