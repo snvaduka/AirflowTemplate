@@ -1,7 +1,7 @@
 # AirflowTemplate
 The Following are the steps required to perform orchestration of dag using airflow webui
 
-1. Fork the github [https://github.com/snvaduka/AirflowTemplate.git] to the your repository
+1. Create your repository using the template [https://github.com/snvaduka/AirflowTemplate.git] 
 2. After forking the github, you will find the below directory structure
     * [Project]
         * base  <--- Framework code just ignore 
@@ -60,7 +60,7 @@ This will be deployed during deployment</td>
 
 
 #### Creating New Dag in Airflow ####
-1. Go to Airflow URL: http://10.185.38.49:8080/home
+1. Login to Airflow URL: http://10.185.38.49:8080/home using the credentials
 2. Search for the Dag **mck_fw_create_dag**
 ![MCK_FW_Create_Dag](https://user-images.githubusercontent.com/88087256/129687718-8dea1cfa-b9e9-45df-8e76-b087b43ae0a7.jpg)
 3. Run the Dag with Config
