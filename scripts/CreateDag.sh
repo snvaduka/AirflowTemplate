@@ -125,21 +125,39 @@ parseDagDefToDic $PWD $inputTemplate
 
 echo "${dictionary[@]}"
 
-dagDefinitionFile=$(getValueFromDic "dagfileName")
-printMessage "Dag Definition file $dagDefinitionFile"
+if [ ! -z ${dictionary[dagfileName]} ]; 
+then
+    echo "dagfileName exists in dictionary"
+    dagDefinitionFile=$(getValueFromDic "dagfileName")
+    printMessage "Dag Definition file $dagDefinitionFile"
+    copyDagDefinition $airflow_home $PWD $dagDefinitionFile
+else
+    printMessage "dagfileName is mandatory to create a DAG"
+    exit 5
+fi
 
-dependencies=$(getValueFromDic "dependencies")
-printMessage "Dag Dependencies file $dependencies"
+if [ ! -z ${dictionary[requirements_file]} ]; 
+then
+    echo "requirements_file exists in dictionary"
+    requirements_file=$(getValueFromDic "requirements_file")
+    printMessage "Requirement file $requirements_file"
+    copyConfigs $airflow_home $PWD $requirements_file
+else
+    printMessage "There are no requirements_file"
+fi
 
-requirements_file=$(getValueFromDic "requirements_file")
-printMessage "Requirement file $requirements_file"
-
-copyDagDefinition $airflow_home $PWD $dagDefinitionFile
-copyConfigs $airflow_home $PWD $dependencies
-copyConfigs $airflow_home $PWD $requirements_file
+if [ ! -z ${dictionary[dependencies]} ]; 
+then
+    echo "requirements_file exists in dictionary"
+    dependencies=$(getValueFromDic "dependencies")
+    printMessage "Dag Dependencies file $dependencies"
+    copyConfigs $airflow_home $PWD $dependencies
+else
+    printMessage "There are no dependencies"
+fi
 
 if [ -f "$airflow_home/$requirements_file" ]; 
-    then
+then
     printMessage "Installing necessary modules from requirements file $requirements_file at $airflow_home"
     /bin/python3 -m pip install -r $airflow_home/$requirements_file
 fi
